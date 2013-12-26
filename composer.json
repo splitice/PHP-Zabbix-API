@@ -1,0 +1,17 @@
+{
+	"keywords" : [
+		"zabbix"
+	],
+	"autoload" : {
+		"psr-0" : {
+			"Splitice" : "src"
+		}
+	},
+	"name" : "splitice/zabbix-api",
+	"type" : "library",
+	"description" : "API for zabbix",
+	"license" : "MIT",
+	"require" : {
+		"php" : ">=5.4"
+	}
+}
