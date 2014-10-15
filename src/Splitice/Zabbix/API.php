@@ -233,7 +233,7 @@ class API {
         self::$instance->last_error = false;
         
         // Make sure we're logged in, or trying to login...
-        if ($this->auth_hash == NULL && $method != 'user.authenticate')
+        if ($this->auth_hash == NULL && $method != 'user.login')
             return false;  // If we're not logged in, no wasting our time here
         
         // Try to retrieve this...
@@ -267,7 +267,7 @@ class API {
      */
     private function __login() {
         // Try to login to our API
-        $data = $this->__callAPI('user.authenticate', array( 'password' => $this->password, 'user' => $this->username ));
+        $data = $this->__callAPI('user.login', array( 'password' => $this->password, 'user' => $this->username ));
         
         if ($this->debug)
             echo "__login() Got response from API: ($data)\n";
