@@ -212,12 +212,14 @@ class API {
     private static function __buildJSONRequest($method, $params = array()) {
         // This is our default JSON array
         $request = array(
-            'auth' => self::$instance->auth_hash,
             'method' => $method,
             'id' => 1,  // NOTE: this needs to be fixed I think?
             'params' => ( is_array($params) ? $params : array() ),
             'jsonrpc' => "2.0"
         );
+        if($method != 'user.login'){
+            $request['auth'] = self::$instance->auth_hash;
+        }
         // Return our request, in JSON format
         return json_encode($request);
     }
