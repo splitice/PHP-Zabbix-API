@@ -279,6 +279,9 @@ class API {
             return true;
         } else {
             $this->auth_hash = NULL;
+            if(!$this->last_error){
+                $this->last_error = var_export($this->last_error, true);
+            }
             return false;
         }
     }
