@@ -86,7 +86,7 @@ class API {
      * Get the last error that
      */
     public static function getLastError() {
-        return self::$last_error;
+        return self::$lastError;
     }
     
     /**
