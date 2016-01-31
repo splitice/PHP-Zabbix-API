@@ -34,7 +34,11 @@ class API {
       * Login, this will attempt to login to Zabbix with the specified username and password
       */
     public static function login($url, $username, $password) {
-        self::$instance = new APIClient($url, $username, $password);
+        $api = new APIClient($url, $username, $password);
+        if(!$api->login()){
+            return false;
+        }
+        self::$instance = $api;
         return self::$instance;
     }
     
@@ -43,6 +47,15 @@ class API {
             self::$instance->debug = true;
         else
             self::$instance->debug = false;
+    }
+
+    private function handleException(\Exception $ex){
+        self::$lastError = $ex->getMessage();
+        if($ex instanceof ZabbixAPIException){
+            if(strpos(self::$lastError,'re-login, please')){
+                self::$instance = null;
+            }
+        }
     }
     
     /**
@@ -53,7 +66,7 @@ class API {
         try {
             return self::$instance->fetch($object, $method, $properties);
         }catch(\Exception $ex){
-            self::$lastError = $ex->getMessage();
+
         }
     }
     

@@ -31,19 +31,26 @@ class APIClient {
 
         $this->url = $url;
 
-
         $this->ch = curl_init();
 
         $this->username = $username;
         $this->password = $password;
+    }
 
-        $this->__login();
+    function is_authed(){
+        return $this->auth_hash != null;
     }
 
     private function _debug($msg){
         if($this->debug){
             echo "$msg\n";
         }
+    }
+
+    function __destruct()
+    {
+        $this->__callAPI("user.logout", array());
+        $this->auth_hash = NULL;
     }
 
     /**
@@ -173,8 +180,12 @@ class APIClient {
             return $decoded_data['result'];
         } else {
             // If we had a actual error, put it in our instance to be able to be retrieved/queried
-            if (!empty($decoded_data['error']))
-                throw new ZabbixAPIException("Zabbix API Error: ".var_export($decoded_data['error'],true));
+            if (!empty($decoded_data['error'])) {
+                if($decoded_data['error']['code'] == -32602){
+                    $this->auth_hash = false;
+                }
+                throw new ZabbixAPIException("Zabbix API Error: " . var_export($decoded_data['error'], true));
+            }
             return false;
         }
     }
@@ -182,7 +193,7 @@ class APIClient {
     /**
      * Private login function to perform the login
      */
-    private function __login() {
+    public function login() {
         // Try to login to our API
         $data = $this->__callAPI('user.login', array( 'password' => $this->password, 'user' => $this->username ));
 
